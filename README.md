@@ -1,4 +1,4 @@
-# 여기는 settings 의 git_branch 입니다.
+# 여기는 setting repository 의 git_branch 입니다.
 ---
 
 다음의 명령어를 입력하여 상태를 확인해보세요 
