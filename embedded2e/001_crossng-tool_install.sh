@@ -4,7 +4,7 @@ echo "=======================pkg install======================="
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install -y automake bison chrpath flex g++ git  \
 gawk libexpat1-dev libncurses5-dev libsdl1.2-dev libtool \
-python2.7-dev texinfo help2man
+python2.7-dev texinfo help2man libtool-bin
 
 
 # gperf specific version (3.0.4)
@@ -27,21 +27,47 @@ popd
 sync
 
 
+
 echo "=======================git download======================="
-git clone https://github.com/crosstool-ng/crosstool-ng.git
+wget https://github.com/crosstool-ng/crosstool-ng/releases/download/crosstool-ng-1.25.0/crosstool-ng-1.25.0.tar.xz
+
 cd crosstool-ng
-git checkout crosstool-ng-1.22.0
+
+
 
 echo "=======================start bootstrap======================="
 ./bootstrap &&
-./configure --enable-local --with-bash=/usr/bin/bash --with-libtool=/usr/bin/libtool &&
+./configure --enable-local
 make distclean
 make
 make install
 
+
+
+echo ""=======================beagle bone black compiler"======================="
 ./ct-ng
 ./ct-ng list-samples
 ./ct-ng show-arm-cortex_a8-linux-gnueabi
 ./ct-ng arm-cortex_a8-linux-gnueabi
 ./ct-ng menuconfig
 ./ct-ng build
+
+echo ""=======================qemu cross compiler"======================="
+./ct-ng distclean
+./ct-ng arm-unknown-linux-gnueabi
+./ct-ng build
+
+
+sudo apt update -y && sudo apt upgrade -y
+
+sudo apt install -y gcc-7 gcc-8 g++-7 g++-8
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 8
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
+
+sudo update-alternatives --config gcc
+sudo update-alternatives --config g++
